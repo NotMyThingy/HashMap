@@ -4,6 +4,10 @@ public class List<T> {
     private T[] lista;
     private int alkioita;
 
+    public List(10) {
+        this(10);
+    }
+
     public List(int size) {
         this.lista = (T[]) new Object[size];
         this.alkioita = 0;
