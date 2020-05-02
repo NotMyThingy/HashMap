@@ -52,6 +52,10 @@ public class HashMap<K, V> {
         return null;
     }
 
+    /**
+     * @param key
+     * @return removes a value-pair from the array by its key. Returns removed value if successful, otherwise returns a null.
+     */
     public V remove(K key) {
         List<Pair<K, V>> values = getValuePairList(key);
         if (values.size() == 0) {
