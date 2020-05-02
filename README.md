@@ -1,2 +1,2 @@
 # HashMap
-Implementation of Java's HashMap
+My simple implementation of Java's HashMap. 
