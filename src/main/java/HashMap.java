@@ -25,7 +25,7 @@ public class HashMap<K, V> {
         }
 
         // If more than 75% of index's are being utilized, create a new, double the size of a list
-        if(1.0 * this.numberOfValues / this.values.length > 0.75) {
+        if (1.0 * this.numberOfValues / this.values.length > 0.75) {
             doubleArraySize();
         }
     }
@@ -50,6 +50,22 @@ public class HashMap<K, V> {
         }
 
         return null;
+    }
+
+    public V remove(K key) {
+        List<Pair<K, V>> values = getValuePairList(key);
+        if (values.size() == 0) {
+            return null;
+        }
+
+        int index = findIndexByKey(values, key);
+        if (index < 0) {
+            return null;
+        }
+
+        Pair<K, V> pair = values.get(index);
+        values.remove(pair);
+        return pair.getValue();
     }
 
     private void doubleArraySize() {
