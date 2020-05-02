@@ -24,7 +24,7 @@ public class HashMap<K, V> {
             valuePairList.get(index).setValue(value);
         }
 
-        // If more than 75% of index's are being utilized, create a new, double the size of list
+        // If more than 75% of index's are being utilized, create a new, double the size of a list
         if(1.0 * this.numberOfValues / this.values.length > 0.75) {
             doubleArraySize();
         }
