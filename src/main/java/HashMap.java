@@ -9,13 +9,12 @@ public class HashMap<K, V> {
     }
 
     /**
-     *
      * @param key
      * @param value
      * @return adds a new key-value pair into the HashMap. If the key already exists, its old value get replaced by a new.
      */
     public void add(K key, V value) {
-        List<Pair<K, V>> valuePairList = getHashList(key);
+        List<Pair<K, V>> valuePairList = getValuePairList(key);
         int index = findIndexByKey(valuePairList, key);
 
         if (index < 0) {
@@ -23,6 +22,11 @@ public class HashMap<K, V> {
             this.numberOfValues++;
         } else {
             valuePairList.get(index).setValue(value);
+        }
+
+        // If more than 75% of index's are being utilized, create a new, double the size of list
+        if(1.0 * this.numberOfValues / this.values.length > 0.75) {
+            doubleArraySize();
         }
     }
 
@@ -32,12 +36,12 @@ public class HashMap<K, V> {
      * @return returns a value of a key-value pair. Returns 'null', if the value doesn't exist.
      */
     public V get(K key) {
-        int hashValue = Math.abs(key.hashCode() % this.values.length);
-        if (this.values[hashValue] == null) {
+        int hash = Math.abs(key.hashCode() % this.values.length);
+        if (this.values[hash] == null) {
             return null;
         }
 
-        List<Pair<K, V>> valuePairsList = this.values[hashValue];
+        List<Pair<K, V>> valuePairsList = this.values[hash];
 
         for (int i = 0; i < valuePairsList.size(); i++) {
             if (valuePairsList.get(i).getKey().equals(key)) {
@@ -48,13 +52,37 @@ public class HashMap<K, V> {
         return null;
     }
 
-    private List<Pair<K, V>> getHashList(K key) {
-        int hashValue = Math.abs(key.hashCode() % this.values.length);
-        if (this.values[hashValue] == null) {
-            this.values[hashValue] = new List<>();
+    private void doubleArraySize() {
+        List<Pair<K, V>>[] temp = new List[this.values.length * 2];
+
+        for (int i = 0; i < this.values.length; i++) {
+            copyValues(temp, i);
         }
 
-        return this.values[hashValue];
+        this.values = temp;
+    }
+
+    private void copyValues(List<Pair<K, V>>[] temp, int fromIndex) {
+        for (int i = 0; i < this.values[fromIndex].size(); i++) {
+            Pair<K, V> value = this.values[fromIndex].get(i);
+
+            // new hash required for even distribution of values
+            int hash = Math.abs(value.getKey().hashCode() % temp.length);
+            if (temp[hash] == null) {
+                temp[hash] = new List<>();
+            }
+
+            temp[hash].add(value);
+        }
+    }
+
+    private List<Pair<K, V>> getValuePairList(K key) {
+        int hash = Math.abs(key.hashCode() % this.values.length);
+        if (this.values[hash] == null) {
+            this.values[hash] = new List<>();
+        }
+
+        return this.values[hash];
     }
 
     private int findIndexByKey(List<Pair<K, V>> list, K key) {
